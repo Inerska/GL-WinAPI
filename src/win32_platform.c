@@ -94,6 +94,8 @@ WinMain(HINSTANCE hInstance,
 			DispatchMessage(&msg);
 		}
         
+        
+        Sleep(1);
 		//TODO: Process user inputs
 		//TODO: Process rendering
 	}
