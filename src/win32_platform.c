@@ -40,7 +40,7 @@ _handle_window_process(HWND* hwnd,
     
     if(!*hwnd)
     {
-        MessageBox(NULL, TEXT("An error has been encountred during the window creation process"), 
+        MessageBox(NULL, TEXT("An error has been encountered during the window creation process"), 
                    NULL, MB_ICONERROR);
         
         return EXIT_FAILURE;
