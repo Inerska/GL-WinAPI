@@ -29,6 +29,15 @@ Win32WindowProc(HWND hwnd,
     return 0;
 }
 
+internal _Bool
+_is_window_created()
+{
+    HANDLE hMutex = NULL;
+    
+    hMutex = CreateMutex(NULL, FALSE, "_WNDMutex");
+    return GetLastError() == ERROR_ALREADY_EXISTS;
+}
+
 internal int
 _handle_window_process(HWND* hwnd,
                        const char* CLASS_NAME,
@@ -80,10 +89,16 @@ WinMain(HINSTANCE hInstance,
 	HWND* hwnd = malloc(sizeof(HWND));
 	char       CLASS_NAME[] = "_WNDCLASS";
     
+    if (_is_window_created())
+    {
+        MessageBox(NULL, TEXT("Another instance of this program is already running !"),
+                   NULL, MB_ICONERROR);
+        
+        return 0;
+    }
+    
 	_create_window_class(lpwnd, hInstance, CLASS_NAME);
 	_handle_window_process(hwnd, CLASS_NAME, TEXT("GL-WINAPI"), hInstance);
-    
-	//ShowWindow(*hwnd, nCmdShow);
     
 	while (gIsRunning > 0)
 	{
