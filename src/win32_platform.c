@@ -30,9 +30,12 @@ Win32WindowProc(HWND hwnd,
 }
 
 internal int
-_handle_window_process(HWND* hwnd, const char* WINDOW_NAME, HINSTANCE hInstance)
+_handle_window_process(HWND* hwnd,
+                       const char* CLASS_NAME,
+                       const char* WINDOW_NAME,
+                       HINSTANCE hInstance)
 {
-    *hwnd = CreateWindowEx(0, TEXT("_WNDCLASS"), WINDOW_NAME, WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+    *hwnd = CreateWindowEx(0, CLASS_NAME, WINDOW_NAME, WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
                            0, 0, hInstance, 0);
     
     if(!*hwnd)
@@ -47,8 +50,11 @@ _handle_window_process(HWND* hwnd, const char* WINDOW_NAME, HINSTANCE hInstance)
 }
 
 internal int
-_create_window_class(WNDCLASS* wnd, HINSTANCE hInstance, const char* CLASS_NAME)
+_create_window_class(WNDCLASS* wnd,
+                     HINSTANCE hInstance,
+                     const char* CLASS_NAME)
 {
+    memset(wnd, 0, sizeof *wnd);
     wnd->lpfnWndProc = Win32WindowProc;
     wnd->hInstance = hInstance;
     wnd->lpszClassName = CLASS_NAME;
@@ -70,26 +76,27 @@ WinMain(HINSTANCE hInstance,
         HINSTANCE hPrevInstance,
         PSTR lpCmdLine, INT nCmdShow)
 {
-    LPWNDCLASS lpwnd  = {0};
-    HWND*     hwnd = NULL;
+	LPWNDCLASS lpwnd = malloc(sizeof(WNDCLASS));
+	HWND* hwnd = malloc(sizeof(HWND));
+	char       CLASS_NAME[] = "_WNDCLASS";
     
-    _create_window_class(lpwnd, hInstance, TEXT("_WNDCLASS"));
-    _handle_window_process(hwnd, TEXT("GL-WINAPI"), hInstance);
+	_create_window_class(lpwnd, hInstance, CLASS_NAME);
+	_handle_window_process(hwnd, CLASS_NAME, TEXT("GL-WINAPI"), hInstance);
     
-    //ShowWindow(*hwnd, nCmdShow);
+	//ShowWindow(*hwnd, nCmdShow);
     
-    while (gIsRunning > 0)
-    {
-        MSG msg;
-        while (PeekMessage(&msg, *hwnd, 0, 0, PM_REMOVE))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
+	while (gIsRunning > 0)
+	{
+		MSG msg;
+		while (PeekMessage(&msg, *hwnd, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
         
-        //TODO: Process user inputs
-        //TODO: Process rendering
-    }
+		//TODO: Process user inputs
+		//TODO: Process rendering
+	}
     
-    return 0;
+	return 0;
 }
