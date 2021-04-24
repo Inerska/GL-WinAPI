@@ -8,6 +8,6 @@ file(GLOB_RECURSE SRC
 file(GLOB_RECURSE HEAD
 		${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
 
-add_executable(${CMAKE_PROJECT_NAME} ${HEAD} ${SRC})
+add_executable(${CMAKE_PROJECT_NAME} WIN32 ${HEAD} ${SRC})
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE opengl32)
